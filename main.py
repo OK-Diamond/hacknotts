@@ -1,14 +1,15 @@
 import pygame
 from game.tracking import FaceTracker
-from game.pipes import PipePair
+from game.bird import Bird, BirdColour
+from game.pipes import PipeManager
 from game.config import SCREEN_SIZE
 
 pygame.init()
-screen = pygame.display.set_mode((640, 480))
+screen = pygame.display.set_mode((SCREEN_SIZE[0], SCREEN_SIZE[1]))
 pygame.display.set_caption("Flappy Bird Eye Cam")
 font = pygame.font.SysFont(None, 48)
 clock = pygame.time.Clock()
-pipe = PipePair(450, 240)
+pipe_manager = PipeManager()
 tracker = FaceTracker()
 running = True
 
@@ -43,8 +44,8 @@ while running:
     text = "I can see you!" if face_seen else "No face found"
     colour = (0, 255, 0) if face_seen else (255, 60, 60)
     screen.blit(font.render(text, True, colour), (20, 20))
-    pipe.update()
-    pipe.draw(screen)
+    pipe_manager.update()
+    pipe_manager.draw(screen)
 
     if face_seen:
         state = "Eyes open" if tracker.eyes_open else "Eyes closed"
