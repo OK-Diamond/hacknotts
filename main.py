@@ -15,6 +15,8 @@ running = True
 blink_count = 0
 blink_flash_frames = 0  # how long to keep showing "BLINK!"
 
+bird = Bird(BirdColour.RED)
+
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -51,6 +53,9 @@ while running:
     screen.blit(font.render(f"Blinks: {blink_count}", True, (255, 255, 255)), (20, 100))
     if blink_flash_frames > 0:
         screen.blit(font.render("BLINK!", True, (255, 220, 0)), (20, 140))
+    
+    # Bird
+    bird.draw(screen)
 
     pygame.display.flip()
     clock.tick(30)
