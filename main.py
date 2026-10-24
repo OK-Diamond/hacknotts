@@ -4,8 +4,8 @@ from game.pipes import PipePair
 from game.config import SCREEN_SIZE
 
 pygame.init()
-screen = pygame.display.set_mode(SCREEN_SIZE)
-pygame.display.set_caption("Flappy Bird")
+screen = pygame.display.set_mode((640, 480))
+pygame.display.set_caption("Flappy Bird Eye Cam")
 font = pygame.font.SysFont(None, 48)
 clock = pygame.time.Clock()
 pipe = PipePair(450, 240)
