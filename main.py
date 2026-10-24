@@ -1,5 +1,6 @@
 import pygame
 from game.tracking import FaceTracker
+from game.bird import Bird, BirdColour
 from game.pipes import PipePair
 from game.config import SCREEN_SIZE
 
