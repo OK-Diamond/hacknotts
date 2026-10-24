@@ -1,7 +1,9 @@
 import pygame
 
 from game.config import FPS, SCREEN_SIZE
+import game.bird as bird
 
+red_bird = bird.Bird(bird.BirdColour.RED)
 
 def main() -> None:
     pygame.init()
@@ -16,6 +18,9 @@ def main() -> None:
                 running = False
 
         screen.fill((30, 30, 30))
+        
+        red_bird.draw(screen)
+        
         pygame.display.flip()
         clock.tick(FPS)
 
