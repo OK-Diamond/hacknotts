@@ -54,6 +54,7 @@ while running:
     screen.blit(font.render(f"Blinks: {blink_count}", True, (255, 255, 255)), (20, 100))
     if blink_flash_frames > 0:
         screen.blit(font.render("BLINK!", True, (255, 220, 0)), (20, 140))
+        bird.flap()
     
     # Bird
     bird.draw(screen)
