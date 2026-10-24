@@ -1,9 +1,10 @@
 import pygame
 from game.tracking import FaceTracker
 from game.pipes import PipePair
+from game.config import SCREEN_SIZE
 
 pygame.init()
-screen = pygame.display.set_mode((640, 480))
+screen = pygame.display.set_mode(SCREEN_SIZE)
 pygame.display.set_caption("Flappy Bird")
 font = pygame.font.SysFont(None, 48)
 clock = pygame.time.Clock()
@@ -35,7 +36,7 @@ while running:
     if tracker.frame is not None:
         h, w, _ = tracker.frame.shape
         cam_surface = pygame.image.frombuffer(tracker.frame.tobytes(), (w, h), "RGB")
-        screen.blit(pygame.transform.scale(cam_surface, (640, 480)), (0, 0))
+        screen.blit(pygame.transform.scale(cam_surface, SCREEN_SIZE), (0, 0))
 
     text = "I can see you!" if face_seen else "No face found"
     colour = (0, 255, 0) if face_seen else (255, 60, 60)
