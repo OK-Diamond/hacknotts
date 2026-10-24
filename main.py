@@ -3,7 +3,7 @@ from game.tracking import FaceTracker
 
 pygame.init()
 screen = pygame.display.set_mode((640, 480))
-pygame.display.set_caption("Blinky Bird")
+pygame.display.set_caption("Flappy Bird")
 font = pygame.font.SysFont(None, 48)
 clock = pygame.time.Clock()
 
