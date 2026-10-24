@@ -3,7 +3,10 @@ import pygame
 from game.config import FPS, SCREEN_SIZE
 import game.bird as bird
 
+from game.pipes import PipePair
+
 red_bird = bird.Bird(bird.BirdColour.RED)
+pipe = PipePair(SCREEN_SIZE[0] // 2, SCREEN_SIZE[1] // 2)
 
 def main() -> None:
     pygame.init()
@@ -18,8 +21,11 @@ def main() -> None:
                 running = False
 
         screen.fill((30, 30, 30))
-        
+
+        pipe.update()
+        pipe.draw(screen)
         red_bird.draw(screen)
+        
         
         pygame.display.flip()
         clock.tick(FPS)
