@@ -1,8 +1,20 @@
 """Bird position, movement, and collision behavior."""
+from collections.abc import Iterable
 from enum import Enum, IntEnum
+
 from pygame import Surface, Rect
+from pygame.transform import rotate
 
 from game.assets import ImageAsset as Img
+from game.config import GRAVITY, SCREEN_SIZE
+
+FLAP_STRENGTH = 8 # Updward speed
+MAX_FALL_SPEED = 10 # Terminal falling speed (px/frame)
+FRAMES_PER_WING = 5 # Game frames to hold each wing image
+MAX_TILT_UP = 25 # Degrees nose-up when rising
+MAX_TILT_DOWN = -90 # Degrees nose-down when falling
+TILT_PER_SPEED = 3 # Degrees of tilt per px/frame of speed
+
 
 class BirdColour(Enum):
     """Enum for bird colours"""
@@ -10,30 +22,83 @@ class BirdColour(Enum):
     YELLOW = 1
     BLUE = 2
 
+
 class BirdWing(IntEnum):
     "Bird wing positions"
     UP = 0
     MID = 1
     DOWN = 2
 
+
+# Order the wings cycle through when flapping
+WING_CYCLE = (BirdWing.UP, BirdWing.MID, BirdWing.DOWN, BirdWing.MID)
+
+
 class Bird:
     """Bird object"""
-    def __init__(self, colour: BirdColour) -> None:
+    def __init__(self, colour: BirdColour, x: float = 100, y: float = 100) -> None:
         name = colour.name.lower()
         self.frames = [
             Img(f'./assets/images/{name}bird-upflap.png'),
             Img(f'./assets/images/{name}bird-midflap.png'),
             Img(f'./assets/images/{name}bird-downflap.png')
         ]
+        self.x = x
+        self.y = y
+        self.velocity = 0.0 # px/frame, positive is downwards
+        self.angle = 0.0 # degrees, positive is nose-up
+        self.tick = 0 # frames since creation, drives the wing animation
 
-    def draw(self, surface: Surface, rect: Rect|None = None, wing_pos: BirdWing = BirdWing.UP) -> None:
-        """Draws the bird to the surface.
+    @property
+    def wing(self) -> BirdWing:
+        """Current wing position"""
+        return WING_CYCLE[(self.tick // FRAMES_PER_WING) % len(WING_CYCLE)]
+
+    @property
+    def rect(self) -> Rect:
+        """Hitbox"""
+        width, height = self.frames[BirdWing.MID].img.get_size()
+        return Rect(round(self.x), round(self.y), width, height)
+
+    def flap(self) -> None:
+        """Give the bird upwards velocity"""
+        self.velocity = -FLAP_STRENGTH
+
+    def update(self) -> None:
+        """Update position & increase tick"""
+        self.velocity = min(self.velocity + GRAVITY, MAX_FALL_SPEED)
+        self.y += self.velocity
+        self.tick += 1
+
+        tilt = -self.velocity * TILT_PER_SPEED
+        self.angle = max(MAX_TILT_DOWN, min(MAX_TILT_UP, tilt))
+
+    def draw(self, surface: Surface, rect: Rect | None = None, wing: BirdWing | None = None) -> None:
+        """Updates the bird, then draws it to the surface.
 
         Args:
             surface (Surface): surface to draw on
-            rect (Rect | None, optional): rect to draw - image asset's rect if none. Defaults to None.
-            wing_pos (BirdWing, optional): Frame to show. Defaults to BirdWing.UP.
+            rect (Rect | None, optional): where to draw. Defaults to the bird's own pos.
+            wing_pos (BirdWing | None, optional): Frame to show. Defaults to the flapping animation.
         """
-        if rect:
-            surface.blit(self.frames[wing_pos].img, rect)
-        surface.blit(self.frames[wing_pos].img, self.frames[wing_pos].rect)
+        self.update()
+        # wing = self.wing if wing_pos is None else wing_pos
+        image = rotate(self.frames[(wing or self.wing)].img, self.angle)
+        centre = (rect or self.rect).center
+        surface.blit(image, image.get_rect(center=centre))
+
+    def hits_ceiling(self) -> bool:
+        """True if the bird is at the top of the screen"""
+        return self.rect.top < 0
+
+    def hits_ground(self, ground_y: int) -> bool:
+        """True if the bird has is at the bottom of the screen
+
+        Args:
+            ground_y (int): y position of the top of the ground
+        """
+        return self.rect.bottom >= ground_y
+
+    def collides_with(self, obstacles: Iterable[Rect]) -> bool:
+        """True if the bird overlaps any of the given rects"""
+        return self.rect.collidelist(list(obstacles)) != -1
