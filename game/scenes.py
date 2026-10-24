@@ -1,50 +1,45 @@
 """Menu, calibration, gameplay, and game-over scenes."""
-import pygame
 import math
+<<<<<<< HEAD
 from game.config import SCREEN_SIZE 
+=======
+import pygame
+>>>>>>> ebfd9cc6c3eb4d45fe4295008aa8bedebdedcd71
 
-pygame.init()
+BACKGROUND_PATH = "./assets/images/background_day.png"
+SCROLL_SPEED = 5  # pixels per frame
 
-clock = pygame.time.Clock()
-FPS = 60
+_background = None
+_scroll = 0
 
+<<<<<<< HEAD
 SCREEN_WIDTH = SCREEN_SIZE[0]
 SCREEN_HEIGHT = SCREEN_SIZE[1]
+=======
+>>>>>>> ebfd9cc6c3eb4d45fe4295008aa8bedebdedcd71
 
-#create game window
-screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-pygame.display.set_caption("Endless Scroll")
+def _load_background(screen_height):
+    """Load the image once, scaled to the screen height. Needs the display to exist first."""
+    global _background
+    img = pygame.image.load(BACKGROUND_PATH).convert()
+    scale = screen_height / img.get_height()
+    _background = pygame.transform.scale(
+        img, (math.ceil(img.get_width() * scale), screen_height)
+    )
 
-#load image
-background_day = pygame.image.load(f"./assets/images/background_day.png").convert()
-background_day_width = background_day.get_width()
 
-#define game variables
-scroll = 0
-tiles = math.ceil(SCREEN_WIDTH  / background_day_width) + 1
+def draw_background(screen, speed=SCROLL_SPEED):
+    """Draw the scrolling background. Call once per frame, before drawing anything else."""
+    global _scroll
+    if _background is None:
+        _load_background(screen.get_height())
 
-#game loop
-run = True
-while run:
+    bg_width = _background.get_width()
+    tiles = math.ceil(screen.get_width() / bg_width) + 1
 
-  clock.tick(FPS)
+    for i in range(tiles):
+        screen.blit(_background, (i * bg_width + _scroll, 0))
 
-  #draw scrolling background
-  for i in range(0, tiles):
-    screen.blit(background_day, (i * background_day_width + scroll, 0))
-
-  #scroll background
-  scroll -= 5
-
-  #reset scroll
-  if abs(scroll) > background_day_width:
-    scroll = 0
-
-  #event handler
-  for event in pygame.event.get():
-    if event.type == pygame.QUIT:
-      run = False
-
-  pygame.display.update()
-
-pygame.quit()
+    _scroll -= speed
+    if abs(_scroll) >= bg_width:
+        _scroll = 0

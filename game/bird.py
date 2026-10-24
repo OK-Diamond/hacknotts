@@ -68,6 +68,17 @@ class Bird:
         """Update position & increase tick"""
         self.velocity = min(self.velocity + GRAVITY, MAX_FALL_SPEED)
         self.y += self.velocity
+
+        # Keep the bird on screen
+        top = 0
+        bottom = SCREEN_SIZE[1] - self.rect.height
+        if self.y < top:
+            self.y = top
+            self.velocity = 0
+        elif self.y > bottom:
+            self.y = bottom
+            self.velocity = 0
+
         self.tick += 1
 
         tilt = -self.velocity * TILT_PER_SPEED
@@ -79,17 +90,19 @@ class Bird:
         Args:
             surface (Surface): surface to draw on
             rect (Rect | None, optional): where to draw. Defaults to the bird's own pos.
-            wing_pos (BirdWing | None, optional): Frame to show. Defaults to the flapping animation.
+            wing (BirdWing | None, optional): Frame to show. Defaults to the flapping animation.
         """
         self.update()
-        # wing = self.wing if wing_pos is None else wing_pos
-        image = rotate(self.frames[(wing or self.wing)].img, self.angle)
-        centre = (rect or self.rect).center
+        # Compare with None: BirdWing.UP is 0 and a zero-size Rect is falsy, so `or` would skip them
+        wing = self.wing if wing is None else wing
+        rect = self.rect if rect is None else rect
+        image = rotate(self.frames[wing].img, self.angle)
+        centre = rect.center
         surface.blit(image, image.get_rect(center=centre))
 
     def hits_ceiling(self) -> bool:
         """True if the bird is at the top of the screen"""
-        return self.rect.top < 0
+        return self.rect.top <= 0
 
     def hits_ground(self, ground_y: int) -> bool:
         """True if the bird has is at the bottom of the screen

@@ -76,3 +76,7 @@ class PipeManager:
     def draw(self, screen: pygame.Surface) -> None:
         for pipe in self.pipes:
             pipe.draw(screen)
+
+    def collision_check(self, bird_rect: pygame.Rect) -> bool:
+        """Return True if the bird collides with any pipe."""
+        return any(pipe.collides_with(bird_rect) for pipe in self.pipes)
