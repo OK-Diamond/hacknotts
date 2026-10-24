@@ -58,7 +58,8 @@ while running:
     
     # Bird
     bird.draw(screen)
-
+    if pipe_manager.collision_check(bird.rect):
+        print("hit")
     pygame.display.flip()
     clock.tick(30)
 
