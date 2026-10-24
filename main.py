@@ -4,7 +4,7 @@ from game.bird import Bird, BirdColour
 
 pygame.init()
 screen = pygame.display.set_mode((640, 480))
-pygame.display.set_caption("Flappy Bird")
+pygame.display.set_caption("Flappy Bird Eye Cam")
 font = pygame.font.SysFont(None, 48)
 clock = pygame.time.Clock()
 
