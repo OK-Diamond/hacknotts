@@ -1,4 +1,4 @@
-"""Load and cache image, sound, and font assets."""
+"""Load and cache assets"""
 from dataclasses import dataclass
 from pygame.image import load
 from pygame import Surface, Rect
