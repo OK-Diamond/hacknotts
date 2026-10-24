@@ -1,12 +1,13 @@
 import pygame
 from game.tracking import FaceTracker
+from game.pipes import PipePair
 
 pygame.init()
 screen = pygame.display.set_mode((640, 480))
 pygame.display.set_caption("Flappy Bird")
 font = pygame.font.SysFont(None, 48)
 clock = pygame.time.Clock()
-
+pipe = PipePair(450, 240)
 tracker = FaceTracker()
 running = True
 
@@ -28,6 +29,8 @@ while running:
     text = "I can see you!" if face_seen else "No face found"
     colour = (0, 255, 0) if face_seen else (255, 60, 60)
     screen.blit(font.render(text, True, colour), (20, 20))
+    pipe.update()
+    pipe.draw(screen)
 
     pygame.display.flip()
     clock.tick(30)
