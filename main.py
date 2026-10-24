@@ -1,37 +1,36 @@
 import pygame
+from game.tracking import FaceTracker
 
-from game.config import FPS, SCREEN_SIZE
-import game.bird as bird
+pygame.init()
+screen = pygame.display.set_mode((640, 480))
+pygame.display.set_caption("Flappy Bird")
+font = pygame.font.SysFont(None, 48)
+clock = pygame.time.Clock()
 
-from game.pipes import PipePair
+tracker = FaceTracker()
+running = True
 
-red_bird = bird.Bird(bird.BirdColour.RED)
-pipe = PipePair(SCREEN_SIZE[0] // 2, SCREEN_SIZE[1] // 2)
+while running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
 
-def main() -> None:
-    pygame.init()
-    screen = pygame.display.set_mode(SCREEN_SIZE)
-    pygame.display.set_caption("Flappy Face")
-    clock = pygame.time.Clock()
-    running = True
+    face_seen = tracker.update()
 
-    while running:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
+    screen.fill((30, 30, 30))
 
-        screen.fill((30, 30, 30))
+    # show the webcam feed so you can check it's working
+    if tracker.frame is not None:
+        h, w, _ = tracker.frame.shape
+        cam_surface = pygame.image.frombuffer(tracker.frame.tobytes(), (w, h), "RGB")
+        screen.blit(pygame.transform.scale(cam_surface, (640, 480)), (0, 0))
 
-        pipe.update()
-        pipe.draw(screen)
-        red_bird.draw(screen)
-        
-        
-        pygame.display.flip()
-        clock.tick(FPS)
+    text = "I can see you!" if face_seen else "No face found"
+    colour = (0, 255, 0) if face_seen else (255, 60, 60)
+    screen.blit(font.render(text, True, colour), (20, 20))
 
-    pygame.quit()
+    pygame.display.flip()
+    clock.tick(30)
 
-
-if __name__ == "__main__":
-    main()
+tracker.release()
+pygame.quit()
