@@ -1,14 +1,15 @@
 """Menu, calibration, gameplay, and game-over scenes."""
 import pygame
 import math
+from game.config import SCREEN_SIZE 
 
 pygame.init()
 
 clock = pygame.time.Clock()
 FPS = 60
 
-SCREEN_WIDTH = 1500
-SCREEN_HEIGHT = 600
+SCREEN_WIDTH = SCREEN_SIZE[0]
+SCREEN_HEIGHT = SCREEN_SIZE[1]
 
 #create game window
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
