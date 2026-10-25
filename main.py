@@ -33,7 +33,7 @@ def get_font(size): # Returns Press-Start-2P in the desired size
 
 def main_game():
     global high_score
-    pygame.display.set_caption("Flappy Bird Eye Cam")
+    pygame.display.set_caption("Flappy Face")
     font = pygame.font.SysFont(None, 48)
     clock = pygame.time.Clock()
     pipe_manager = PipeManager()
@@ -152,8 +152,10 @@ def main_menu():
     while True:
         screen.blit(BG, (0, 0))
 
+        pygame.display.set_caption("Flappy Face")
+        
         MENU_MOUSE_POS = pygame.mouse.get_pos()
-
+        
         MENU_TEXT = get_font(50).render("MAIN MENU", True, "#b68f40")
         MENU_RECT = MENU_TEXT.get_rect(center=(400, 100))
 
