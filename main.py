@@ -88,7 +88,7 @@ while running:
             bird.frames[bird.wing].img,
             bird.angle,
         )
-        screen.blit( # draw the frozen bird image at its current position
+        screen.blit( # draw the frozenn bird image at its current position
             frozen_bird_image,
             frozen_bird_image.get_rect(center=bird.rect.center),
         )

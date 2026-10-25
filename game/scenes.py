@@ -1,5 +1,8 @@
 """Menu, calibration, gameplay, and game-over scenes."""
 import math
+import sys
+from tkinter.ttk import Button
+from matplotlib.font_manager import get_font
 import pygame
 
 BACKGROUND_PATH = "./assets/images/background_day.png"
@@ -7,6 +10,7 @@ SCROLL_SPEED = 5  # pixels per frame
 
 _background = None
 _scroll = 0
+_game_over_image = None
 
 
 def _load_background(screen_height):
@@ -38,11 +42,20 @@ def draw_background(screen, speed=SCROLL_SPEED):
 
 def draw_game_over(screen, title_font, body_font):
     """Draw a dimmed overlay with game-over and restart text."""
+    global _game_over_image
+
+    if _game_over_image is None:
+        _game_over_image = pygame.image.load(
+            "./assets/images/gameover.png"
+        ).convert_alpha()
+
     overlay = pygame.Surface(screen.get_size(), pygame.SRCALPHA)
     overlay.fill((0, 0, 0, 160))
     screen.blit(overlay, (0, 0))
 
-    title = title_font.render("Game Over", True, (255, 0, 0))
     restart = body_font.render("Press space to restart", True, (255, 255, 255))
-    screen.blit(title, title.get_rect(center=(screen.get_width() // 2, 200)))
+    screen.blit(
+        _game_over_image,
+        _game_over_image.get_rect(center=(screen.get_width() // 2, 200)),
+    )
     screen.blit(restart, restart.get_rect(center=(screen.get_width() // 2, 270)))
