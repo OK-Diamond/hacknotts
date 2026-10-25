@@ -91,10 +91,9 @@ class PipeManager:
         """Return True if the bird collides with any pipe."""
         return any(pipe.collides_with(bird_rect) for pipe in self.pipes)
 
-    def score_check(self, bird_rect: pygame.Rect) -> int:
-        """Return the number of pipes the bird has crossed."""
-        crossed_pipes = 0
+    def increment_score(self, bird_rect: pygame.Rect) -> int:
+        """Increment the score for each pipe the bird has crossed."""
         for pipe in self.pipes:
             if pipe.cross_pipe(bird_rect):
-                crossed_pipes += 1
-        return crossed_pipes
+                return 1  # Return 1 if pipe crossed
+        return 0

@@ -22,6 +22,8 @@ bird = Bird(BirdColour.RED)
 
 game_over_font = pygame.font.SysFont(None, 64)
 
+score_font = pygame.font.Font('./assets/fonts/Rocketron.otf', 48)
+
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -62,8 +64,9 @@ while running:
         if pipe_manager.collision_check(bird.rect):
             game_over = True
 
-        score_count += pipe_manager.score_check(bird.rect)
-        print(f"Score: {score_count}")  # print score to console for now        
+        # increment score if the bird has crossed a pipe
+        score_count += pipe_manager.increment_score(bird.rect)
+              
 
         # 4. webcam preview in the top-right corner
         if tracker.frame is not None:
@@ -83,6 +86,9 @@ while running:
         screen.blit(font.render(f"Blinks: {blink_count}", True, (255, 255, 255)), (20, 100))
         if blink_flash_frames > 0:
             screen.blit(font.render("BLINK!", True, (255, 220, 0)), (20, 140))
+
+        score_text = score_font.render(f'Score: {score_count}', True, (255, 255, 0))
+        screen.blit(score_text, (20, 180))
 
         
     else:
