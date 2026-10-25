@@ -7,7 +7,7 @@ from game.scenes import draw_background, draw_game_over
 
 pygame.init()
 screen = pygame.display.set_mode((SCREEN_SIZE[0], SCREEN_SIZE[1]))
-pygame.display.set_caption("Flappy Bird Eye Cam")
+pygame.display.set_caption("Flappy Bird Blinking Game")
 font = pygame.font.SysFont(None, 48)
 clock = pygame.time.Clock()
 pipe_manager = PipeManager()
