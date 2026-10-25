@@ -96,6 +96,7 @@ def main_game():
 
             # end game if the bird collides with a pipe
             if pipe_manager.collision_check(bird.rect):
+                bird.crash()
                 game_over = True
 
             # increment score if the bird has crossed a pipe
