@@ -127,7 +127,7 @@ def main_game():
                 screen.blit(font.render("BLINK!", True, (255, 220, 0)), (20, 140))
 
             score_text = score_font.render(f'Score: {score_count}', True, (255, 255, 0))
-            screen.blit(score_text, (20, 500))
+            screen.blit(score_text, (20, 450))
 
         else:
             # Game over screen
