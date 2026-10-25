@@ -51,8 +51,10 @@ def draw_game_over(screen, body_font):
     screen.blit(overlay, (0, 0))
 
     restart = body_font.render("Press space to restart", True, (255, 255, 255))
+    exit = body_font.render("Press escape to exit", True, (255, 255, 255))
     screen.blit(
         _game_over_image,
         _game_over_image.get_rect(center=(screen.get_width() // 2, 200)),
     )
     screen.blit(restart, restart.get_rect(center=(screen.get_width() // 2, 270)))
+    screen.blit(exit, exit.get_rect(center=(screen.get_width() // 2, 320)))

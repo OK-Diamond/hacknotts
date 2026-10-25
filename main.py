@@ -49,6 +49,8 @@ def main_game():
                         blink_flash_frames = 0
                         game_over = False
                         score_count = 0
+                    if event.key == pygame.K_ESCAPE:
+                        main_menu()  # Return to main menu
 
         face_seen = tracker.update()
 
