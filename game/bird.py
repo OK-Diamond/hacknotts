@@ -1,19 +1,31 @@
 """Bird position, movement, and collision behavior."""
 from collections.abc import Iterable
 from enum import Enum, IntEnum
+from functools import cache
 
+import pygame
 from pygame import Surface, Rect
+from pygame.mixer import Sound
 from pygame.transform import rotate
 
 from game.assets import ImageAsset as Img
-from game.config import GRAVITY, SCREEN_SIZE
+from game.config import GRAVITY, SCREEN_SIZE, FLAP_STRENGTH, MAX_FALL_SPEED, FRAMES_PER_WING, MAX_TILT_UP, MAX_TILT_DOWN, TILT_PER_SPEED, SOUND_VOLUME
 
-FLAP_STRENGTH = 8 # Updward speed
-MAX_FALL_SPEED = 10 # Terminal falling speed (px/frame)
-FRAMES_PER_WING = 5 # Game frames to hold each wing image
-MAX_TILT_UP = 25 # Degrees nose-up when rising
-MAX_TILT_DOWN = -90 # Degrees nose-down when falling
-TILT_PER_SPEED = 3 # Degrees of tilt per px/frame of speed
+@cache
+def load_sounds() -> dict[str, Sound]:
+    """Load the bird's sounds
+
+    Returns an empty dict if there's no audio device
+    """
+    try:
+        if not pygame.mixer.get_init():
+            pygame.mixer.init()
+        sounds = {name: Sound(f'./assets/sounds/{name}.ogg') for name in ('wing', 'hit', 'die')}
+    except pygame.error:
+        return {}
+    for sound in sounds.values():
+        sound.set_volume(SOUND_VOLUME)
+    return sounds
 
 
 class BirdColour(Enum):
@@ -48,6 +60,13 @@ class Bird:
         self.velocity = 0.0 # px/frame, positive is downwards
         self.angle = 0.0 # degrees, positive is nose-up
         self.tick = 0 # frames since creation, drives the wing animation
+        self.sounds = load_sounds()
+        self.crashed = False
+
+    def play_sound(self, name: str) -> pygame.mixer.Channel | None:
+        """Play one of the bird's sounds (does nothing if audio isn't available)"""
+        sound = self.sounds.get(name)
+        return sound.play() if sound else None
 
     @property
     def wing(self) -> BirdWing:
@@ -63,6 +82,16 @@ class Bird:
     def flap(self) -> None:
         """Give the bird upwards velocity"""
         self.velocity = -FLAP_STRENGTH
+        self.play_sound('wing')
+
+    def crash(self) -> None:
+        """Play the hit sound followed by the die sound. Only plays once per bird."""
+        if self.crashed:
+            return
+        self.crashed = True
+        channel = self.play_sound('hit')
+        if channel and 'die' in self.sounds:
+            channel.queue(self.sounds['die'])
 
     def update(self) -> None:
         """Update position & increase tick"""
