@@ -15,6 +15,7 @@ tracker = FaceTracker()
 running = True
 game_over = False # for game over screen need to know this!
 blink_count = 0
+score_count = 0
 blink_flash_frames = 0  # how long to keep showing "BLINK!"
 
 bird = Bird(BirdColour.RED)
@@ -33,6 +34,7 @@ while running:
                     blink_count = 0
                     blink_flash_frames = 0
                     game_over = False
+                    score_count = 0
 
     face_seen = tracker.update()
 
@@ -59,6 +61,9 @@ while running:
         # end game if the bird collides with a pipe
         if pipe_manager.collision_check(bird.rect):
             game_over = True
+
+        score_count += pipe_manager.score_check(bird.rect)
+        print(f"Score: {score_count}")  # print score to console for now        
 
         # 4. webcam preview in the top-right corner
         if tracker.frame is not None:

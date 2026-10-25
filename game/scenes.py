@@ -1,8 +1,5 @@
 """Menu, calibration, gameplay, and game-over scenes."""
 import math
-import sys
-from tkinter.ttk import Button
-from matplotlib.font_manager import get_font
 import pygame
 
 BACKGROUND_PATH = "./assets/images/background_day.png"

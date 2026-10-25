@@ -46,6 +46,16 @@ class PipePair:
         # Return True if the bird overlaps either pipe.
         return self.top_pipe.colliderect(bird_rect) or self.bottom_pipe.colliderect(bird_rect)
 
+    def cross_pipe(self, bird_rect: pygame.Rect) -> bool:
+        """Return True if the bird has just crossed the pipe pair."""
+        pipe_right_after_move = self.x + self.width
+        pipe_right_before_move = pipe_right_after_move + self.speed
+
+        crossed_bird = (
+            pipe_right_before_move >= bird_rect.left
+            and pipe_right_after_move < bird_rect.left
+        )
+        return crossed_bird
 
 class PipeManager:
     """Create, update, draw, and remove the active pipe pairs."""
@@ -80,3 +90,11 @@ class PipeManager:
     def collision_check(self, bird_rect: pygame.Rect) -> bool:
         """Return True if the bird collides with any pipe."""
         return any(pipe.collides_with(bird_rect) for pipe in self.pipes)
+
+    def score_check(self, bird_rect: pygame.Rect) -> int:
+        """Return the number of pipes the bird has crossed."""
+        crossed_pipes = 0
+        for pipe in self.pipes:
+            if pipe.cross_pipe(bird_rect):
+                crossed_pipes += 1
+        return crossed_pipes
