@@ -23,6 +23,8 @@ bird = Bird(BirdColour.RED)
 game_over_font = pygame.font.SysFont(None, 64)
 
 score_font = pygame.font.Font('./assets/fonts/Rocketron.otf', 48)
+arial_font = pygame.font.Font('./assets/fonts/Rocketron.otf', 36)
+
 
 while running:
     for event in pygame.event.get():
@@ -88,7 +90,7 @@ while running:
             screen.blit(font.render("BLINK!", True, (255, 220, 0)), (20, 140))
 
         score_text = score_font.render(f'Score: {score_count}', True, (255, 255, 0))
-        screen.blit(score_text, (20, 180))
+        screen.blit(score_text, (20, 500))
 
         
     else:
@@ -103,8 +105,9 @@ while running:
             frozen_bird_image,
             frozen_bird_image.get_rect(center=bird.rect.center),
         )
+        screen.blit(score_text, (20, 500))
 
-        draw_game_over(screen, game_over_font, font) 
+        draw_game_over(screen, arial_font) 
 
     pygame.display.flip()
     clock.tick(30)

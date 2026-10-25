@@ -37,7 +37,7 @@ def draw_background(screen, speed=SCROLL_SPEED):
         _scroll = 0
 
 
-def draw_game_over(screen, title_font, body_font):
+def draw_game_over(screen, body_font):
     """Draw a dimmed overlay with game-over and restart text."""
     global _game_over_image
 
