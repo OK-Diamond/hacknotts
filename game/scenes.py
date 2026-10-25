@@ -1,10 +1,6 @@
 """Menu, calibration, gameplay, and game-over scenes."""
 import math
-<<<<<<< HEAD
-from game.config import SCREEN_SIZE 
-=======
 import pygame
->>>>>>> ebfd9cc6c3eb4d45fe4295008aa8bedebdedcd71
 
 BACKGROUND_PATH = "./assets/images/background_day.png"
 SCROLL_SPEED = 5  # pixels per frame
@@ -12,11 +8,6 @@ SCROLL_SPEED = 5  # pixels per frame
 _background = None
 _scroll = 0
 
-<<<<<<< HEAD
-SCREEN_WIDTH = SCREEN_SIZE[0]
-SCREEN_HEIGHT = SCREEN_SIZE[1]
-=======
->>>>>>> ebfd9cc6c3eb4d45fe4295008aa8bedebdedcd71
 
 def _load_background(screen_height):
     """Load the image once, scaled to the screen height. Needs the display to exist first."""
