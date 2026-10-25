@@ -12,10 +12,27 @@ pygame.init()
 screen = pygame.display.set_mode((SCREEN_SIZE[0], SCREEN_SIZE[1]))
 BG = pygame.image.load("./assets/images/main-menu/Background.png")
 
+# ---- high score saving/loading ----
+HIGH_SCORE_FILE = "highscore.txt"
+
+def load_high_score():
+    try:
+        with open(HIGH_SCORE_FILE) as f:
+            return int(f.read().strip())
+    except (OSError, ValueError):
+        return 0
+
+def save_high_score(value):
+    with open(HIGH_SCORE_FILE, "w") as f:
+        f.write(str(value))
+
+high_score = load_high_score()
+
 def get_font(size): # Returns Press-Start-2P in the desired size
     return pygame.font.Font("./assets/fonts/font.ttf", size)
 
 def main_game():
+    global high_score
     pygame.display.set_caption("Flappy Bird Eye Cam")
     font = pygame.font.SysFont(None, 48)
     clock = pygame.time.Clock()
@@ -80,7 +97,11 @@ def main_game():
 
         # increment score if the bird has crossed a pipe
             score_count += pipe_manager.increment_score(bird.rect)
-              
+
+        # update and save the high score
+            if score_count > high_score:
+                high_score = score_count
+                save_high_score(high_score)
 
         # 4. webcam preview in the top-right corner
             if tracker.frame is not None:
@@ -136,19 +157,23 @@ def main_menu():
         MENU_TEXT = get_font(50).render("MAIN MENU", True, "#b68f40")
         MENU_RECT = MENU_TEXT.get_rect(center=(400, 100))
 
-        PLAY_BUTTON = Button(image=pygame.image.load("./assets/images/main-menu/Play Rect.png"), pos=(400, 200), 
+        # high score: plain text, not a button, where Play used to be
+        HIGH_SCORE_TEXT = get_font(30).render(f"HIGH SCORE: {high_score}", True, "#d7fcd4")
+        HIGH_SCORE_RECT = HIGH_SCORE_TEXT.get_rect(center=(400, 200))
+
+        # Play button moved down to where Options was
+        PLAY_BUTTON = Button(image=pygame.image.load("./assets/images/main-menu/Play Rect.png"), pos=(400, 350),
                             text_input="PLAY", font=get_font(35), base_color="#d7fcd4", hovering_color="White")
-        OPTIONS_BUTTON = Button(image=pygame.image.load("./assets/images/main-menu/Options Rect.png"), pos=(400, 350), 
-                            text_input="OPTIONS", font=get_font(35), base_color="#d7fcd4", hovering_color="White")
-        QUIT_BUTTON = Button(image=pygame.image.load("./assets/images/main-menu/Quit Rect.png"), pos=(400, 500), 
+        QUIT_BUTTON = Button(image=pygame.image.load("./assets/images/main-menu/Quit Rect.png"), pos=(400, 500),
                             text_input="QUIT", font=get_font(35), base_color="#d7fcd4", hovering_color="White")
 
         screen.blit(MENU_TEXT, MENU_RECT)
+        screen.blit(HIGH_SCORE_TEXT, HIGH_SCORE_RECT)
 
-        for button in [PLAY_BUTTON, OPTIONS_BUTTON, QUIT_BUTTON]:
+        for button in [PLAY_BUTTON, QUIT_BUTTON]:
             button.changeColor(MENU_MOUSE_POS)
             button.update(screen)
-        
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -156,38 +181,9 @@ def main_menu():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if PLAY_BUTTON.checkForInput(MENU_MOUSE_POS):
                     main_game()
-                if OPTIONS_BUTTON.checkForInput(MENU_MOUSE_POS):
-                    options()
                 if QUIT_BUTTON.checkForInput(MENU_MOUSE_POS):
                     pygame.quit()
                     sys.exit()
-
-        pygame.display.update()
-
-def options():
-    while True:
-        screen.blit(BG, (0, 0))
-
-        OPTIONS_MOUSE_POS = pygame.mouse.get_pos()
-
-        OPTIONS_TEXT = get_font(45).render("OPTIONS", True, "#b68f40")
-        OPTIONS_RECT = OPTIONS_TEXT.get_rect(center=(400, 100))
-        screen.blit(OPTIONS_TEXT, OPTIONS_RECT)
-
-        BACK_BUTTON = Button(image=pygame.image.load("./assets/images/main-menu/Back Rect.png"), pos=(400, 500), 
-                            text_input="BACK", font=get_font(35), base_color="#d7fcd4", hovering_color="White")
-
-        for button in [BACK_BUTTON]:
-            button.changeColor(OPTIONS_MOUSE_POS)
-            button.update(screen)
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if BACK_BUTTON.checkForInput(OPTIONS_MOUSE_POS):
-                    return
 
         pygame.display.update()
 
